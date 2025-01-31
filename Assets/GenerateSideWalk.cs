@@ -26,6 +26,7 @@ public class FloorGenerator : MonoBehaviour
     private List<Vector2Int> walkableTiles = new List<Vector2Int>();
     private List<Vector2Int> obstaclePositions = new List<Vector2Int>();
     private GameObject walker;
+    private Animator walkerAnimator; // Reference to the walker's animator
 
     private Queue<Vector2Int> agentMovementQueue = new Queue<Vector2Int>(); // Queue for agent steps
 
@@ -230,6 +231,13 @@ public class FloorGenerator : MonoBehaviour
             Vector3 startPosition = new Vector3(position.x * cellSize, 0, position.y * cellSize);
             startPosition.y = GetGroundYAtPosition(startPosition) + walkerYOffset; // Adjust for ground height
             walker = Instantiate(walkerPrefab, startPosition, Quaternion.identity);
+
+            walkerAnimator = walker.GetComponent<Animator>(); // Get the Animator component
+            if (walkerAnimator == null)
+            {
+                Debug.LogError("Walker prefab must have an Animator component!");
+            }
+
             Debug.Log($"Walker spawned at: {position}");
         }
         else
@@ -261,6 +269,12 @@ public class FloorGenerator : MonoBehaviour
             }
         }
 
+        // Set animation speed
+        if (walkerAnimator != null)
+        {
+            walkerAnimator.SetFloat("Speed", 1.0f); // Set Speed to trigger walking animation
+        }
+
         // Smoothly move the walker to the new position
         while (elapsedTime < moveDuration)
         {
@@ -271,6 +285,12 @@ public class FloorGenerator : MonoBehaviour
 
         walker.transform.position = targetPosition; // Ensure final position
 
+        // Stop walking animation
+        if (walkerAnimator != null)
+        {
+            walkerAnimator.SetFloat("Speed", 0.0f); // Set Speed to 0 to stop walking animation
+        }
+
         // Create a footprint at the final position
         if (footprintPrefab != null)
         {
@@ -279,6 +299,7 @@ public class FloorGenerator : MonoBehaviour
 
         Debug.Log($"Walker moved smoothly to: {targetPosition}");
     }
+
 
 
 
