@@ -1,0 +1,18 @@
+Set-Content .gitignore "Library/
+Temp/
+Logs/
+UserSettings/
+Packages/
+*.dll
+*.dylib
+*.so
+*.pdb
+*.exe
+*.apk
+*.aab
+*.zip
+*.tar
+*.gz
+*.rar
+*.7z
+"
